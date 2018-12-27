@@ -1,0 +1,7 @@
+.idea
+__pycache__
+musics/
+data_x.npy
+data_y.npy
+formated_data.zip
+model.h5

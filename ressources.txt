@@ -1,0 +1,14 @@
+Datasets:
+    FMA - https://github.com/mdeff/fma
+    GTZAN - https://github.com/Hguimaraes/gtzan.keras
+    Librosa - https://librosa.github.io/librosa/index.html
+
+Need FFMPEG or another audio backend
+
+Python 3.6 tensorflow
+
+1 - Spectrograms
+2 - Split with overlapping window
+3 - Run into model
+4 - ???
+5 - Profit

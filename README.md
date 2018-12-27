@@ -8,11 +8,9 @@ part of the song is created and reshaped to 3 channels to act as an image.
 2D convolutions are applied by the model, and the genre of the music is determined.
 Accuracy is around 80% at the moment.
 ## Dataset
-Download the GTZAN dataset [here](http://opihi.cs.uvic.ca/sound/genres.tar.gz).
+Download the GTZAN dataset [here](http://opihi.cs.uvic.ca/sound/genres.tar.gz) and extract it in a **musics** folder.
 
-You can also get already formated data for the CNN and the trained model [here](), simply extract the files. 
-
-Extract it in a **musics** folder.
+You can also get already formated data for the CNN and the trained model [here](https://mega.nz/#!3rhxWaDS!6sgy0BzETQSt5ERZBjjYwWEdBiCk7qm4PKnzo8qCldU), and simply extract the files. 
 
 ## Requirements
 The following modules can be installed via pip or using an IDE like PyCharm:

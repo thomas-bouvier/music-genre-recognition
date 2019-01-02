@@ -1,7 +1,13 @@
 .idea
 __pycache__
 musics/
+tests/
+images/
+
 data_x.npy
 data_y.npy
 formated_data.zip
-model.h5
+
+model_backup.h5
+
+sample.mp3

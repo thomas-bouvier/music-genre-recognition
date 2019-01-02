@@ -1,6 +1,6 @@
 # music-genre-recognition
 ## Introduction
-Music gere recognition algorithm using Convolutional Neural Network with the VGG16 model.
+Music genre recognition algorithm using Convolutional Neural Network with the VGG16 model.
 
 It works by splitting a sound in multiple overlapping windows, then the mel spectrogram of each
 part of the song is created and reshaped to 3 channels to act as an image.
@@ -22,26 +22,37 @@ The following modules can be installed via pip or using an IDE like PyCharm:
  - Librosa
  - Sklearn
  - An audio backend like ffmpeg - https://ffmpeg.org/
+ - H5py
+ - Matplotlib
 
 ## How to run
 ### Train
-To train the model, follow these steps:
-1. If you want to use already formatted data, set `LOAD_DATA_FROM_FILE = True` in `test.py`.
-Otherwise, set it to `False` but it will take longer time and use a lot of RAM.
-2. Set `TRAIN_MODE = True`.
-3. Run `test.py` and wait.
+To train the model you can run the following command:
+```
+python main.py -m train
+```
+This will load the audio files, format it and train the model.
 
-The files `data_x.npy` and `data_y.npy` store the already formatted data.
+Note that it can take a long time, especially with Tensorflow CPU and it will require some RAM.
 
-Note that it can take a long time, especially with Tensorflow CPU, and a lot of RAM will be used - aroung 5Gb.
+You can also add the following parameters to the command:
+- `--no-save-data` Once the data is loaded and formatted, it is saved as a .npy file so that you don't need to do that part again. With this flag, the data won't be saved.
+- `--no-save-model` The trained model is saved in a .h5 file. With this flag, the model is not saved.
+- `--load-data` If you already have .npy files with the formatted data, this flag will load them instead of loading data from audio files. Data won't be saved again afterwards.
+- `--debug` Enable debug mode (shows more information).
 ### Test
 **You will need a trained model to test.**
 
-To test the model against your own audio file, follow these steps:
-1. Put a 30s audio file in the folder
-2. Open `test.py` and change the following things:
-    ```
-    TRAIN_MODE = False
-    TEST_FILE = './your-file.mp3'
-    ```
-3. Run `test.py`, the genre of the song will be outputted at the end.
+Once you have your model and your audio file, put them in the root folder.
+
+To test the model against your own audio file, run the following command:
+```
+python main.py -m test -song your_song.mp3
+```
+This will load the file, process it and run it through the model.
+
+You can add the following parameter:
+- `--debug` Enable debug mode (shows more information).
+## Results
+Accuracy of the model is 82%, however it works best with old songs (before 2000) since the dataset used
+to train it was created around this time. Since music has evolved, it will make more mistakes on modern songs.

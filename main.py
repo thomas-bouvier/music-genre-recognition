@@ -17,7 +17,8 @@ NUM_GENRES = len(GENRES)
 DATA_FOLDER = "./musics"
 DATA_Y_FILE = './data_y.npy'
 DATA_X_FILE = './data_x.npy'
-MODEL_FILE = './model_backup.h5'
+MODEL_FILE = './model.h5'
+BATCH_SIZE = 1000
 # Set to 660000 instead of 661500 because depending on the format, it can cause problems
 SAMPLE_SIZE = 660000
 
@@ -103,7 +104,7 @@ def main(args):
         # Train the model
         model_info = model.fit(data_x, data_y,
                                epochs=50,
-                               batch_size=1000,
+                               batch_size=BATCH_SIZE,
                                verbose=1,
                                validation_data=(test_x, test_y))
         score = model.evaluate(test_x, test_y, verbose=0)

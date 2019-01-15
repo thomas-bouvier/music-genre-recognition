@@ -1,16 +1,16 @@
 # music-genre-recognition
+
 ## Introduction
-Music genre recognition algorithm using Convolutional Neural Network with the VGG16 model.
+Music genre recognition algorithm using a convolutional neural network (CNN).
 
-It works by splitting a sound in multiple overlapping windows, then the mel spectrogram of each
-part of the song is created and reshaped to 3 channels to act as an image.
+The algorithm split up the input songs into 3s slices. The melspectrogram of every slice is then computed, giving us input images for the CNN. 1D convolutions are used.
 
-2D convolutions are applied by the model, and the genre of the music is determined.
 Accuracy is around 80% at the moment.
+
 ## Dataset
 Download the GTZAN dataset [here](http://opihi.cs.uvic.ca/sound/genres.tar.gz) and extract it in a **musics** folder.
 
-You can also get already formated data for the CNN and the trained model [here](https://mega.nz/#!3rhxWaDS!6sgy0BzETQSt5ERZBjjYwWEdBiCk7qm4PKnzo8qCldU), and simply extract the files. 
+You can also get already formatted data for the CNN and the trained model [here](https://mega.nz/#!3rhxWaDS!6sgy0BzETQSt5ERZBjjYwWEdBiCk7qm4PKnzo8qCldU), and simply extract the files.
 
 ## Requirements
 The following modules can be installed via pip or using an IDE like PyCharm:
@@ -40,6 +40,7 @@ You can also add the following parameters to the command:
 - `--no-save-model` The trained model is saved in a .h5 file. With this flag, the model is not saved.
 - `--load-data` If you already have .npy files with the formatted data, this flag will load them instead of loading data from audio files. Data won't be saved again afterwards.
 - `--debug` Enable debug mode (shows more information).
+
 ### Test
 **You will need a trained model to test.**
 
@@ -53,6 +54,7 @@ This will load the file, process it and run it through the model.
 
 You can add the following parameter:
 - `--debug` Enable debug mode (shows more information).
+
 ## Results
 Accuracy of the model is 82%, however it works best with old songs (before 2000) since the dataset used
 to train it was created around this time. Since music has evolved, it will make more mistakes on modern songs.

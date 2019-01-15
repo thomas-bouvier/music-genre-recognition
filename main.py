@@ -281,25 +281,26 @@ def load_data(debug):
     rootdir = os.getcwd()
     for subdir in os.listdir(rootdir + "/" + DATA_FOLDER):
         path = rootdir + "/" + DATA_FOLDER
-        for file in os.listdir(path + "/" + subdir):
-            if os.path.isfile(path + "/" + subdir + "/" + file):
-                signal, sr = librosa.load(path + "/" + subdir + "/" + file)
-                if debug:
-                    print("Processing file {0}".format(file))
-                # Limit song size, to be sure it's 30s
-                # 661500 is the number of values
-                # 30s at 22050Hz makes 661500 values
-                # But set a 660000 because after some tests, 661500 can cause problems
-                signal = signal[:SAMPLE_SIZE]
+        if os.path.isdir(path + "/" + subdir):
+            for file in os.listdir(path + "/" + subdir):
+                if os.path.isfile(path + "/" + subdir + "/" + file):
+                    signal, sr = librosa.load(path + "/" + subdir + "/" + file)
+                    if debug:
+                        print("Processing file {0}".format(file))
+                    # Limit song size, to be sure it's 30s
+                    # 661500 is the number of values
+                    # 30s at 22050Hz makes 661500 values
+                    # But set a 660000 because after some tests, 661500 can cause problems
+                    signal = signal[:SAMPLE_SIZE]
 
-                # The genre is in the name of the file, so we can use it
-                genre = GENRES[file.split('.')[0]]
+                    # The genre is in the name of the file, so we can use it
+                    genre = GENRES[file.split('.')[0]]
 
-                # Split song
-                splits, genres = split_song(signal=signal, genre=genre)
-                spectrograms = generate_spectrograms(splits)
-                data_y.extend(genres)
-                data_x.extend(spectrograms)
+                    # Split song
+                    splits, genres = split_song(signal=signal, genre=genre)
+                    spectrograms = generate_spectrograms(splits)
+                    data_y.extend(genres)
+                    data_x.extend(spectrograms)
             
     if debug:
         print("Done.")

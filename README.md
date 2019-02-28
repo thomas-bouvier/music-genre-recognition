@@ -51,6 +51,11 @@ To test the model against your own audio file, run the following command:
 python main.py -m test -song your_song.mp3
 ```
 This will load the file, process it and run it through the model.
+If you want to make this test for multiple song, put them all in a folder and run:
+```
+python main.py -m test -folder your_folder
+```
+All the files within the folder must be audio files, and this folder must be in the root folder.
 
 You can add the following parameter:
 - `--debug` Enable debug mode (shows more information).

@@ -60,8 +60,13 @@ def main(args):
                 test_song = "./{0}".format(args.song)
             else:
                 raise ValueError("The specified test song doesn't exist or is not in the root folder.")
+        elif args.folder is not None:
+            if os.path.exists("./{0}".format(args.folder)):
+                test_folder = "./{0}".format(args.folder)
+            else:
+                raise ValueError("The specified folder doesn't exist or is not in the root folder.")
         else:
-            raise ValueError('No test song was specified.')
+            raise ValueError("No song or folder were given for testing.")
 
     if mode == 'train':
         print("Training mode.")
@@ -153,42 +158,82 @@ def main(args):
         if args.debug:
             print(model.summary())
 
-        # Load song
-        signal, _ = librosa.load('./' + test_song)
+        if args.song is not None:
+            # Load song
+            signal, _ = librosa.load('./' + test_song)
 
-        # Process song
-        nb_samples = int(len(signal)/SAMPLE_SIZE)
-        spectrograms = []
-        for i in range(nb_samples):
-            part = signal[i * SAMPLE_SIZE: (i+1) * SAMPLE_SIZE]
-            splits, _ = split_song(part, 0)
-            spectr_part = generate_spectrograms(splits)
-            
-            # Uncomment this part if you want to use 2D Convolutions
-            # It will transform the grayscale spectrogram to a RGB image
-            # spectr_part = np.squeeze(np.stack((spectr_part,) * 3, -1))
-            
-            spectrograms.extend(spectr_part)
+            # Process song
+            nb_samples = int(len(signal)/SAMPLE_SIZE)
+            spectrograms = []
+            for i in range(nb_samples):
+                part = signal[i * SAMPLE_SIZE: (i+1) * SAMPLE_SIZE]
+                splits, _ = split_song(part, 0)
+                spectr_part = generate_spectrograms(splits)
 
-        spectrograms = np.array(spectrograms)
+                # Uncomment this part if you want to use 2D Convolutions
+                # It will transform the grayscale spectrogram to a RGB image
+                # spectr_part = np.squeeze(np.stack((spectr_part,) * 3, -1))
 
-        # Run into model
-        results = model.predict_classes(x=spectrograms)
-        # results = model.predict(x=spectrograms, batch_size=len(spectrograms))
-        if args.debug:
-            print(results)
+                spectrograms.extend(spectr_part)
 
-        # Interpret results
-        genre = np.zeros(NUM_GENRES)
-        keys = list(GENRES.keys())
-        values = list(GENRES.values())
-        for instance in results:
-            genre[instance] += 1
+            spectrograms = np.array(spectrograms)
 
-        print("The genre of the song is:")
-        for i in range(NUM_GENRES):
-            print("{0} ".format(keys[values.index(i)].title()) +
-                  "at {:.3f} %".format(genre[i] * 100 / sum([x for x in genre])))
+            # Run into model
+            results = model.predict_classes(x=spectrograms)
+            # results = model.predict(x=spectrograms, batch_size=len(spectrograms))
+            if args.debug:
+                print(results)
+
+            # Interpret results
+            genre = np.zeros(NUM_GENRES)
+            keys = list(GENRES.keys())
+            values = list(GENRES.values())
+            for instance in results:
+                genre[instance] += 1
+
+            print("The genre of the song is:")
+            for i in range(NUM_GENRES):
+                print("{0} ".format(keys[values.index(i)].title()) +
+                      "at {:.3f} %".format(genre[i] * 100 / sum([x for x in genre])))
+
+        elif args.folder is not None:
+            # Folder containing songs
+            rootdir = os.getcwd()
+            for file in os.listdir(rootdir + "/" + test_folder):
+                path = rootdir + "/" + test_folder
+                if os.path.isfile(path + "/" + file):
+                    spectrograms = []
+                    signal, sr = librosa.load(path + "/" + file)
+                    if args.debug:
+                        print("\nProcessing file {0}".format(file))
+                    nb_samples = int(len(signal) / SAMPLE_SIZE)
+                    for i in range(nb_samples):
+                        part = signal[i * SAMPLE_SIZE: (i + 1) * SAMPLE_SIZE]
+                        splits, _ = split_song(part, 0)
+                        spectr_part = generate_spectrograms(splits)
+
+                        # Uncomment this part if you want to use 2D Convolutions
+                        # It will transform the grayscale spectrogram to a RGB image
+                        # spectr_part = np.squeeze(np.stack((spectr_part,) * 3, -1))
+
+                        spectrograms.extend(spectr_part)
+
+                    spectrograms = np.array(spectrograms)
+
+                    # Run into model
+                    results = model.predict_classes(x=spectrograms)
+
+                    # Interpret results
+                    genre = np.zeros(NUM_GENRES)
+                    keys = list(GENRES.keys())
+                    values = list(GENRES.values())
+                    for instance in results:
+                        genre[instance] += 1
+
+                    print("The genre of the song {0} is:".format(file))
+                    for i in range(NUM_GENRES):
+                        print("    {0} ".format(keys[values.index(i)].title()) +
+                              "at {:.3f} %".format(genre[i] * 100 / sum([x for x in genre])))
 
 
 def create_test_data(data_x, data_y, test_size=0.3):
@@ -354,6 +399,8 @@ if __name__ == "__main__":
                         help="Load data from the .npy files, by default they are not loaded.")
     parser.add_argument("-song", dest="song",
                         help="The name of the song file used for test.")
+    parser.add_argument("-folder", dest="folder",
+                        help="The name of the folder containing the song files used for test.")
     parser.add_argument("--debug", dest="debug",
                         action='store_true', default=False,
                         help="Enable debug mode.")
